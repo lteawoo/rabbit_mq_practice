@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  mq:
+    image: rabbitmq:3.13.7-management-alpine
+    container_name: rabbitmq
+    volumes:
+      - ./.docker/rabbitmq/config/:/etc/rabbitmq/
+      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "Cluster-Cookies"
+      RABBITMQ_DEFAULT_USER: "twlee"
+      RABBITMQ_DEFAULT_PASS: "test123"
