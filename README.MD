@@ -79,14 +79,24 @@ public class Recv {
 
     private final static String QUEUE_NAME = "hello";
 
-    public static void main(String[] args) throws IOException, TimeoutException {
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("localhost");
-        factory.setPort(5672);
-        factory.setUsername("twlee");
-        factory.setPassword("test123");
-        Connection connection = factory.newConnection();
-        Channel channel = connection.createChannel();
+  public static void main(String[] args) throws IOException, TimeoutException {
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setHost("localhost");
+    factory.setPort(5672);
+    factory.setUsername("twlee");
+    factory.setPassword("test123");
+    Connection connection = factory.newConnection();
+    Channel channel = connection.createChannel();
+
+    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+
+    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+      String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+      System.out.println(" [x] Received '" + message + "'");
+    };
+    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+  }
 ```
 
 `Send`클래스가 퍼블리시하는 큐와 일치한다는 점을 유의하자. 퍼블리셔보다 컨슈머가 시작될 수 있으므로 메시지를 소비하기 전에 큐가 존재하는지 확인해야 한다.
