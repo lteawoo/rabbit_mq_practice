@@ -1,0 +1,25 @@
+spring:
+  cloud:
+    function:
+      definition: uppercase
+    stream:
+      bindings:
+        uppercase-in-0:
+          binder: rabbit
+          destination: uppercase.topic
+          group: uppercase-group
+        uppercase-out-0:
+          binder: rabbit
+          destination: uppercase.topic
+      binders:
+        rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: twlee
+                password: test123
+server:
+  port: 0
